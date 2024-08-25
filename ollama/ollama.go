@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"main/tllama/config"
+	"github.com/sarjann/tllama/config"
 	"net/http"
 	"net/url"
 )

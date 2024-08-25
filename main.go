@@ -3,8 +3,8 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"main/tllama/config"
-	"main/tllama/ollama"
+	"github.com/sarjann/tllama/config"
+	"github.com/sarjann/tllama/ollama"
 	"os"
 	"strings"
 )

@@ -1,4 +1,4 @@
-module main/tllama
+module github.com/sarjann/tllama
 
 go 1.22
 
