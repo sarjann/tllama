@@ -1,6 +1,7 @@
 # Installation
 
 Clone the repo and run `go install .`
+Alternatively just run `go install github.com/sarjann/tllama@latest`
 
 # Usage
 
