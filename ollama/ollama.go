@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"main/tllama/config"
 	"net/http"
 	"net/url"
@@ -32,8 +31,8 @@ type ReqStruct struct {
 	Context []int  `json:"context"`
 }
 
-func PromptRequest(prompt string, context []int, firstRun bool, config config.Config) (error, RespStruct) {
-	ollamaUrl, err := url.Parse(config.OllamaUrl)
+func PromptRequest(prompt string, context []int, firstRun bool, conf config.Config) (error, RespStruct) {
+	ollamaUrl, err := url.Parse(conf.OllamaUrl)
 	if err != nil {
 		panic(err)
 	}
@@ -43,7 +42,7 @@ func PromptRequest(prompt string, context []int, firstRun bool, config config.Co
 	generateUrl := apiUrl.JoinPath("generate")
 
 	var promptBody = ReqStruct{
-		Model:   config.DefaultModel,
+		Model:   conf.Model,
 		Prompt:  prompt,
 		Stream:  true,
 		Context: context,
@@ -66,19 +65,21 @@ func PromptRequest(prompt string, context []int, firstRun bool, config config.Co
 		return err, RespStruct{}
 	}
 
+	decoder := json.NewDecoder(resp.Body)
+	for {
+		var respStruct RespStruct
+		err := decoder.Decode(&respStruct)
+		if err != nil {
+			break
+		}
+		fmt.Print("\033[92m", respStruct.Response, "\033[0m")
+		if respStruct.Done {
+			println()
+			return nil, respStruct
+		}
+	}
+
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return err, RespStruct{}
-	}
-	var respStruct RespStruct
-
-	fmt.Println(string(body))
-	err = json.Unmarshal(body, &respStruct)
-	if err != nil {
-		return err, RespStruct{}
-	}
-
-	return nil, respStruct
+	return nil, RespStruct{}
 }

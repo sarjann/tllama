@@ -11,8 +11,8 @@ import (
 )
 
 type Config struct {
-	OllamaUrl    string `json:"ollama_url"`
-	DefaultModel string `json:"default_mode"`
+	OllamaUrl string `json:"ollama_url"`
+	Model     string `json:"model"`
 }
 
 var usr, _ = user.Current()
@@ -31,7 +31,7 @@ func validateConfig(config Config) {
 		panic(err)
 	}
 
-	if config.DefaultModel == "" {
+	if config.Model == "" {
 		panic("Default model cannot be empty")
 	}
 }
@@ -47,7 +47,7 @@ func LoadOrCreateConfig() Config {
 		ollamaUrl, _ := reader.ReadString('\n')
 		ollamaUrl = strings.Replace(ollamaUrl, "\n", "", -1)
 
-		fmt.Println("Please enter the default model (e.g. llama3.1)")
+		fmt.Println("Please enter the default model (e.g. llama3.1), currently this should be preinstalled")
 		defaultModel, _ := reader.ReadString('\n')
 		defaultModel = strings.Replace(defaultModel, "\n", "", -1)
 
@@ -76,4 +76,11 @@ func LoadOrCreateConfig() Config {
 		}
 	}
 	return config
+}
+
+func ClearConfig() {
+	err := os.Remove(ConfigPath)
+	if err != nil {
+		fmt.Println("No config to remove")
+	}
 }
