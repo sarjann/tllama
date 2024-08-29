@@ -61,7 +61,7 @@ func LoadOrCreateConfig() Config {
 		}
 
 		file, err := os.Create(ConfigPath)
-		fmt.Println(ConfigPath)
+		fmt.Println("Write Path: ",ConfigPath)
 		if err != nil {
 			panic(err)
 		}
@@ -82,5 +82,22 @@ func ClearConfig() {
 	err := os.Remove(ConfigPath)
 	if err != nil {
 		fmt.Println("No config to remove")
+	}
+}
+
+func (c *Config) Save() {
+	configJSONBody, err := json.Marshal(c)
+	if err != nil {
+		panic(err)
+	}
+
+	file, err := os.Create(ConfigPath)
+	fmt.Println(ConfigPath)
+	if err != nil {
+		panic(err)
+	}
+	_, err = file.Write(configJSONBody)
+	if err != nil {
+		panic(err)
 	}
 }
