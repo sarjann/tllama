@@ -29,6 +29,24 @@ func main() {
 			fmt.Println("Removing config, please restart and enter new config")
 			config.ClearConfig()
 			return
+		case "/changemodel":
+			fmt.Println("Changing active model")
+		}
+
+		if strings.HasPrefix(input, "/changemodel ") {
+			fmt.Println("Changing active model")
+			model := strings.TrimPrefix(input, "/changemodel ")
+			model = strings.TrimSpace(model)
+
+			if model == "" {
+				fmt.Println("No model provided")
+			}
+
+			conf.Model = model
+			fmt.Println("Changed model to: ", model)
+			context = nil
+			conf.Save()
+			continue
 		}
 
 		err, respStruct := ollama.PromptRequest(input, context, true, conf)
