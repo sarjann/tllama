@@ -29,8 +29,6 @@ func main() {
 			fmt.Println("Removing config, please restart and enter new config")
 			config.ClearConfig()
 			return
-		case "/changemodel":
-			fmt.Println("Changing active model")
 		}
 
 		if strings.HasPrefix(input, "/changemodel ") {
@@ -46,6 +44,46 @@ func main() {
 			fmt.Println("Changed model to: ", model)
 			context = nil
 			conf.Save()
+			continue
+		}
+
+		if strings.HasPrefix(input, "/pullmodel") {
+			fmt.Println("Pulling new model")
+			model := strings.TrimPrefix(input, "/pullmodel")
+			model = strings.TrimSpace(model)
+
+			if model == "" {
+				fmt.Println("No model provided")
+			}
+			err, _ := ollama.PullModel(model, conf)
+			if err != nil {
+				fmt.Println("Error:", err)
+				return
+			}
+
+			fmt.Println("Changed model to: ", model)
+
+			conf.Model = model
+			context = nil
+			conf.Save()
+			continue
+		}
+
+		if strings.HasPrefix(input, "/deletemodel") {
+			fmt.Println("Deleting model")
+			model := strings.TrimPrefix(input, "/deletemodel")
+			model = strings.TrimSpace(model)
+
+			if model == "" {
+				fmt.Println("No model provided")
+			}
+			err := ollama.DeleteModel(model, conf)
+			if err != nil {
+				fmt.Println("Error:", err)
+				return
+			}
+
+			fmt.Println("Deleted model: ", model)
 			continue
 		}
 
